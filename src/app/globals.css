@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR",
+    system-ui, -apple-system, sans-serif;
+
+  --color-ink-50: #f6f8fb;
+  --color-ink-100: #eaeff6;
+  --color-ink-200: #d5dde9;
+  --color-ink-300: #b3c0d3;
+  --color-ink-400: #7d8ea8;
+  --color-ink-500: #556780;
+  --color-ink-600: #3d4c62;
+  --color-ink-700: #2b3849;
+  --color-ink-800: #1c2736;
+  --color-ink-900: #111b27;
+
+  --color-brand-50: #eef4fb;
+  --color-brand-100: #d6e5f5;
+  --color-brand-500: #1f5fa8;
+  --color-brand-600: #17508f;
+  --color-brand-700: #113c6d;
+
+  --color-safe-50: #eaf6ee;
+  --color-safe-500: #1a7f45;
+  --color-safe-700: #135c32;
+
+  --color-watch-50: #fdf3e3;
+  --color-watch-500: #b26a06;
+  --color-watch-700: #8a5205;
+
+  --color-alert-50: #fdecec;
+  --color-alert-500: #c02626;
+  --color-alert-700: #911d1d;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  font-size: 17px;
+}
+
+body {
+  background-color: var(--color-ink-50);
+  color: var(--color-ink-800);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+*:focus-visible {
+  outline: 3px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+@utility card {
+  background-color: white;
+  border: 1px solid var(--color-ink-200);
+  border-radius: 0.75rem;
+}
+
+@utility label-text {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink-600);
+  margin-bottom: 0.35rem;
+}
+
+@utility field {
+  width: 100%;
+  border: 1px solid var(--color-ink-300);
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  font-size: 1rem;
+  background-color: white;
+  color: var(--color-ink-800);
+}
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: var(--color-brand-600);
+  color: white;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  font-size: 1rem;
+}
+
+@utility btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: white;
+  color: var(--color-ink-700);
+  font-weight: 600;
+  border: 1px solid var(--color-ink-300);
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+}
