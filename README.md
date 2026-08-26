@@ -22,6 +22,25 @@ npm run dev                  # http://localhost:3000
 외부 API 키가 없어도 전체 흐름이 그대로 동작합니다. LLM은 규칙·휴리스틱 기반 분석기로, 전화는 가상 통화
 시뮬레이션으로 대체됩니다. 초기 데이터로 대상자 124명과 최근 30일 통화 이력이 준비되어 있습니다.
 
+## 인터넷에 배포하기
+
+Vercel(호스팅) + Supabase(데이터 보관) 조합으로 배포합니다.
+
+1. Supabase에서 프로젝트를 만들고, SQL Editor에 [`supabase/schema.sql`](supabase/schema.sql)
+   전체를 붙여넣어 실행합니다.
+2. Vercel에서 이 저장소를 import하고 환경변수 세 개를 넣습니다.
+   - `NEXT_PUBLIC_SUPABASE_URL` — Supabase → Settings → API의 Project URL
+   - `SUPABASE_SERVICE_ROLE_KEY` — 같은 화면의 service_role 키 (서버에서만 사용, 공개 금지)
+   - `CARE_ENCRYPTION_KEY` — `openssl rand -base64 32`로 만든 32바이트 키
+3. 배포된 주소를 열면 최초 설정 화면이 나옵니다. **초기 데이터 넣기**를 누르면 시연용 데이터가
+   저장되고 대시보드가 열립니다.
+
+환경변수를 넣지 않아도 화면은 모두 동작하지만, 서버가 다시 시작되면 입력한 내용이 사라집니다.
+이 경우 화면 상단에 임시 저장소 안내가 표시됩니다.
+
+`CARE_ENCRYPTION_KEY`는 한 번 정하면 바꾸지 마세요. 키를 바꾸면 이미 저장된 이름·연락처·통화 전문을
+읽을 수 없습니다.
+
 ## 화면
 
 | 경로 | 설명 |
@@ -32,6 +51,7 @@ npm run dev                  # http://localhost:3000
 | `/clients/[id]` | 대상자 상세. AI 요약·분석, 후속조치 기록, 변화 추이, 통화 이력 |
 | `/notifications` | 위험 신호 알림 |
 | `/privacy` | 개인정보 보호 조치, 보유기간 관리, 관리자 활동 로그 |
+| `/setup` | 최초 설정. 연결 상태 확인, 초기 데이터 넣기, 데이터 전체 삭제 |
 
 ## 위험도 분류
 
@@ -55,7 +75,7 @@ npm run dev                  # http://localhost:3000
 | --- | --- | --- | --- |
 | LLM | `src/lib/ai/types.ts` `LlmProvider` | 규칙·휴리스틱 | `CARE_LLM_PROVIDER=anthropic` + `ANTHROPIC_API_KEY` |
 | 전화 | `src/lib/telephony/types.ts` `CallProvider` | 가상 통화 시뮬레이션 | `CARE_CALL_PROVIDER` (2단계에서 Voice API 제공자 추가) |
-| 저장소 | `src/lib/store/types.ts` `DataStore` | 메모리 | Supabase 구현 추가 (`supabase/schema.sql` 참고) |
+| 저장소 | `src/lib/store/types.ts` `DataStore` | 메모리 | Supabase 환경변수 설정 시 자동 전환 |
 
 ## 개인정보 보호
 

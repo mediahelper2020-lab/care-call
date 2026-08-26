@@ -14,8 +14,8 @@ export async function getCurrentUser(): Promise<User> {
   const jar = await cookies();
   const id = jar.get(SESSION_COOKIE)?.value ?? DEFAULT_USER_ID;
   const user = (await store.getUser(id)) ?? (await store.getUser(DEFAULT_USER_ID));
-  if (!user) throw new Error("사용자 정보를 찾을 수 없습니다.");
-  return user;
+  // 계정 정보가 아직 없는 초기 상태에서도 화면이 열리도록 기본 관리자로 되돌린다.
+  return user ?? { id: DEFAULT_USER_ID, name: "관리자", role: "admin", organization_id: "org-001" };
 }
 
 export async function setCurrentUserCookie(userId: string): Promise<void> {

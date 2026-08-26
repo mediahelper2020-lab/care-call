@@ -13,11 +13,14 @@ export function AppShell({
   user,
   users,
   unreadCount,
+  temporaryStorage,
   children,
 }: {
   user: User;
   users: User[];
   unreadCount: number;
+  /** 메모리 저장소로 동작 중이면 입력한 내용이 유지되지 않는다는 것을 알린다. */
+  temporaryStorage: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -74,7 +77,17 @@ export function AppShell({
         </div>
       </aside>
       <main className="flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
-        <div className="mx-auto max-w-7xl">{children}</div>
+        <div className="mx-auto max-w-7xl">
+          {temporaryStorage ? (
+            <p className="mb-5 rounded-lg border border-watch-500/40 bg-watch-50 px-4 py-3 text-base font-semibold text-watch-700">
+              임시 저장소로 동작 중입니다. 서버가 다시 시작되면 입력한 내용이 사라집니다.{" "}
+              <Link href="/setup" className="underline">
+                데이터 보관 설정하기
+              </Link>
+            </p>
+          ) : null}
+          {children}
+        </div>
       </main>
     </div>
   );

@@ -6,6 +6,8 @@ import { assertAccess, getCurrentUser, setCurrentUserCookie } from "@/lib/auth";
 import { normalizePhone, retentionUntil } from "@/lib/privacy";
 import { runSimulatedCall } from "@/lib/services/calls";
 import { getStore } from "@/lib/store";
+import { invalidateReadiness } from "@/lib/store/readiness";
+import { resetSupabase, seedSupabase } from "@/lib/store/supabase-setup";
 import type { CategoryFinding, ConsentStatus, InterventionAction, RiskLevel } from "@/lib/types";
 
 function revalidateAll(clientId?: string) {
@@ -244,6 +246,36 @@ export async function markNotificationReadAction(formData: FormData): Promise<vo
   await store.markNotificationRead(id);
   revalidatePath("/notifications");
   revalidatePath("/");
+}
+
+export async function seedDemoDataAction(_prev: FormState, _formData: FormData): Promise<FormState> {
+  try {
+    const result = await seedSupabase();
+    invalidateReadiness();
+    revalidateAll();
+    revalidatePath("/setup");
+    return {
+      ok: true,
+      message: `초기 데이터를 넣었습니다. 대상자 ${result.clients}명, 통화기록 ${result.calls}건.`,
+    };
+  } catch (error) {
+    return { ok: false, message: error instanceof Error ? error.message : "초기 데이터 저장에 실패했습니다." };
+  }
+}
+
+export async function resetDataAction(_prev: FormState, formData: FormData): Promise<FormState> {
+  if (String(formData.get("confirm") ?? "") !== "삭제") {
+    return { ok: false, message: "확인란에 '삭제'라고 입력해야 실행됩니다." };
+  }
+  try {
+    await resetSupabase();
+    invalidateReadiness();
+    revalidateAll();
+    revalidatePath("/setup");
+    return { ok: true, message: "모든 데이터를 지웠습니다. 초기 데이터를 다시 넣을 수 있습니다." };
+  } catch (error) {
+    return { ok: false, message: error instanceof Error ? error.message : "데이터 삭제에 실패했습니다." };
+  }
 }
 
 export async function purgeExpiredAction(): Promise<void> {
